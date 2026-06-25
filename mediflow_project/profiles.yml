@@ -3,7 +3,7 @@ mediflow_project:
     dev:
       account: YHGIBAS-ZJ87413
       database: MEDIFLOW
-      password: Silvasilvasilvaeyo2002!
+      password: **********
       role: ACCOUNTADMIN
       schema: med_schema
       threads: 1
