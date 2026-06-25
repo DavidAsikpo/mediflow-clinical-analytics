@@ -1,0 +1,13 @@
+mediflow_project:
+  outputs:
+    dev:
+      account: YHGIBAS-ZJ87413
+      database: MEDIFLOW
+      password: Silvasilvasilvaeyo2002!
+      role: ACCOUNTADMIN
+      schema: med_schema
+      threads: 1
+      type: snowflake
+      user: DAVIDRICHARD
+      warehouse: COMPUTE_WH
+  target: dev

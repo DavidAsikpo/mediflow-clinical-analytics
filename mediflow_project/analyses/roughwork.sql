@@ -1,0 +1,25 @@
+SELECT  CAST(TRIM(OBSERVATION_ID) AS STRING) AS OBSERVATION_ID,
+        CAST(TRIM(PATIENT_ID) AS STRING) AS PATIENT_ID,
+        CAST(TRIM(ENCOUNTER_ID) AS STRING) AS ENCOUNTER_ID,
+        CAST(TRIM(STATUS) AS STRING) AS STATUS,
+        CASE
+            WHEN REGEXP_LIKE(TRIM(OBS_CODE, ''''), '^[0-9]+-[0-9]+$') THEN CAST(OBS_CODE AS STRING)
+            ELSE NULL
+        END AS OBS_CODE,
+        CAST(TRIM(OBS_SYSTEM) AS STRING) AS OBS_SYSTEM,
+        CAST(TRIM(OBS_NAME,'"') AS STRING) AS OBS_NAME,
+        TRY_CAST(TRIM(EFFECTIVE_DATE, '"') AS TIMESTAMP) AS EFFECTIVE_DATE,
+        CASE
+           WHEN regexp_like(TRIM(VALUE), '^[0-9]+(\.[0-9]+)?$') THEN cast(VALUE AS integer)
+           ELSE NULL
+        END AS VALUE,
+        CASE 
+           WHEN regexp_like(TRIM(UNIT), '^[a-zA-Z%/{]+$') THEN CAST(UNIT AS STRING)
+           ELSE NULL
+        END AS UNIT
+FROM {{ source('RAW', 'observation') }}
+
+
+
+
+

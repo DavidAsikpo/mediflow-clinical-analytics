@@ -1,0 +1,14 @@
+sources:
+    - name: RAW
+      database: MEDIFLOW
+      schema: RAW
+      tables:
+        - name: patient
+        - name: observation
+        - name: procedure 
+        - name: claim
+        - name: condition
+        - name: medication_request
+        - name: encounter
+
+    

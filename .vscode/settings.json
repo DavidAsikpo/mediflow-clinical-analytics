@@ -1,3 +1,7 @@
 {
-    "python-envs.defaultEnvManager": "ms-python.python:venv"
+    "python-envs.defaultEnvManager": "ms-python.python:venv",
+    "dbt.perspectiveTheme": "Vintage",
+    "dbt.profilesDir": "C:\\Projects\\DATA_WAREHOUSE\\mediflow_project",
+    "dbt.projectDir": "C:\\Projects\\DATA_WAREHOUSE\\mediflow_project"
+
 }
