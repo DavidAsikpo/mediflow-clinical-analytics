@@ -2,3 +2,4 @@ pandas
 numpy 
 boto3
 python-dotenv
+prefect

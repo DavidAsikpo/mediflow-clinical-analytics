@@ -1,0 +1,79 @@
+version: 2
+
+models:
+
+  # ── INT PATIENT ENCOUNTERS ────────────────────────────────────────────────
+  - name: int_condition_patient
+    description: >
+      Ephemeral model. Joins stg_raw__condition to stg_raw__patient.
+      Produces one row per encounter enriched with patient demographics.
+      Compiled as a CTE into mart_readmissions at runtime —
+      no table created in Snowflake.
+    columns:
+      - name: CONDITION_ID
+        description: Primary key — unique encounter identifier.
+        tests: [not_null, unique]
+      - name: PATIENT_ID
+        description: FK → stg_raw__patient.PATIENT_ID
+        tests: [not_null]
+
+  # ── INT PATIENT CONDITIONS ────────────────────────────────────────────────
+  - name: int_encounter_claim
+    description:
+      Ephemeral model. Joins stg_raw__encounter to stg_raw__claim.
+      Produces one row per encounter enriched with patient demographics.
+      Compiled as a CTE into mart_condition_prevalence at runtime.
+    columns:
+      - name: ENCOUNTER_ID
+        description: Primary key — unique condition identifier.
+        tests: [not_null, unique]
+      - name: PATIENT_ID
+        description: FK → stg_raw__patient.PATIENT_ID
+        tests: [not_null]
+
+
+  # ── INT ENCOUNTER CONDITIONS ──────────────────────────────────────────────
+  - name: int_encounter_condition
+    description: >
+      Ephemeral model. Joins stg_raw__encounters to stg_raw__conditions
+      on both ENCOUNTER_ID and PATIENT_ID to prevent cartesian products.
+      Compiled as a CTE into mart_length_of_stay at runtime.
+    columns:
+      - name: ENCOUNTER_ID
+        description: FK → stg_raw__encounter.ENCOUNTER_ID
+        tests: [not_null]
+      - name: PATIENT_ID
+        description: FK → stg_raw__patient.PATIENT_ID
+        tests: [not_null]
+
+
+
+  # ── INT ENCOUNTER CLAIMS ──────────────────────────────────────────────────
+  - name: int_encounter_patient
+    description: >
+      Ephemeral model. stg_raw__encounters +
+      stg_raw__patient 
+    columns:
+      - name: ENCOUNTER_ID
+        description: FK → stg_raw__encounter.ENCOUNTER_ID
+        tests: [not_null]
+      - name: PATIENT_ID
+        description: FK → stg_raw__claim.PATIENT_ID
+        tests: [not_null]
+
+
+
+  # ── INT MEDICATION CONDITIONS ─────────────────────────────────────────────
+  - name: int_medication_condition
+    description: >
+      Ephemeral model. Joins stg_raw__medications to stg_raw__conditions
+      on both ENCOUNTER_ID and PATIENT_ID — dual key join prevents cartesian
+      products for patients with multiple encounters.
+      Compiled as a CTE into mart_medication_patterns at runtime.
+    columns:
+      - name: MEDICATION_ID
+        description: Primary key — unique medication identifier.
+        tests: [not_null, unique]
+      - name: PATIENT_ID
+        description: FK → stg_raw__patient.PATIENT_ID
+        tests: [not_null]

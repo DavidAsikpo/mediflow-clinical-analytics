@@ -1,0 +1,59 @@
+version: 2
+
+sources:
+  - name: RAW
+    database: MEDIFLOW
+    schema: RAW
+    description:
+      Raw Synthea FHIR data loaded into Snowflake via AWS S3 COPY INTO.
+      One table per FHIR resource type.
+
+    tables:
+      - name: claim
+        description: Raw insurance claim data
+        columns:
+          - name: CLAIM_ID
+            description: Unique claim identifier
+            tests: [not_null, unique]
+          - name: CREATED_DATE
+            description: Incremental watermark column
+            tests: [not_null]
+
+      - name: encounter
+        description: Raw clinical encounter data
+        columns:
+          - name: ENCOUNTER_ID
+            tests: [not_null, unique]
+          - name: START_DATE
+            tests: [not_null]
+
+      - name: patient
+        description: Raw patient demographic data
+        columns:
+          - name: PATIENT_ID
+            tests: [not_null, unique]
+
+      - name: condition
+        description: Raw diagnosed condition
+        columns:
+          - name: CONDITION_ID
+            tests: [not_null, unique]
+
+      - name: medication_request
+        description: Raw medication request
+        columns:
+          - name: MEDICATION_ID
+            tests: [not_null, unique]
+
+      - name: procedure
+        description: Raw clinical procedure
+        columns:
+          - name: PROCEDURE_ID
+            tests: [not_null, unique]
+
+      - name: observation
+        description: Raw clinical observation — vitals and labs
+        columns:
+          - name: OBSERVATION_ID
+            tests: [not_null, unique]
+    

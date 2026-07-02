@@ -1,0 +1,108 @@
+version: 2
+
+models:
+
+  - name: stg_raw__claim
+    description: >
+      Cleaned and standardised claims data. Incremental merge on CLAIM_ID.
+      Removes quote characters, casts dates to TIMESTAMP_NTZ.
+    columns:
+      - name: CLAIM_ID
+        description: Primary key — unique claim identifier
+        tests: [not_null, unique]
+      - name: PATIENT_ID
+        tests: [not_null]
+      - name: ENCOUNTER_ID
+        tests: [not_null]
+      - name: CREATED_DATE
+        description: Incremental watermark — claim creation date
+        tests: [not_null]
+      - name: STATUS
+        tests:
+          - accepted_values:
+              values: ['ACTIVE', 'CANCELLED', 'DRAFT', 'ENTERED-IN-ERROR']
+              config:
+                severity: warn
+
+  - name: stg_raw__encounter
+    description: >
+      Cleaned encounter data. Incremental merge on ENCOUNTER_ID.
+    columns:
+      - name: ENCOUNTER_ID
+        tests: [not_null, unique]
+      - name: PATIENT_ID
+        tests: [not_null]
+      - name: START_DATE
+        tests: [not_null]
+      - name: CLASS_CODE
+        tests:
+          - accepted_values:
+              values: ['AMB', 'IMP', 'EMER', 'VR', 'HH']
+              config:
+                severity: warn
+
+  - name: stg_raw__patient
+    description: >
+      Cleaned patient demographics. Materialised as view.
+      Age calculated from BIRTH_DATE using age_in_years macro.
+    columns:
+      - name: PATIENT_ID
+        tests: [not_null, unique]
+      - name: BIRTH_DATE
+        tests: [not_null]
+      - name: GENDER
+        tests:
+          - accepted_values:
+              values: ['male', 'female', 'other', 'unknown']
+              config:
+                severity: warn
+
+  - name: stg_raw__condition
+    description: >
+      Cleaned condition data. Incremental merge on CONDITION_ID.
+    columns:
+      - name: CONDITION_ID
+        tests: [not_null, unique]
+      - name: PATIENT_ID
+        tests: [not_null]
+      - name: RECORDED_DATE
+        description: Incremental watermark
+        tests: [not_null]
+
+  - name: stg_raw__medication_request
+    description: >
+      Cleaned medication request data. Incremental merge on MEDICATION_ID.
+    columns:
+      - name: MEDICATION_ID
+        tests: [not_null, unique]
+      - name: PATIENT_ID
+        tests: [not_null]
+      - name: AUTHORED_DATE
+        description: Incremental watermark
+        tests: [not_null]
+
+  - name: stg_raw__procedure
+    description: >
+      Cleaned procedure data. Incremental merge on PROCEDURE_ID.
+    columns:
+      - name: PROCEDURE_ID
+        tests: [not_null, unique]
+      - name: PATIENT_ID
+        tests: [not_null]
+      - name: PERFORMED_START
+        description: Incremental watermark
+        tests: [not_null]
+
+  - name: stg_raw__observation
+    description: >
+      Cleaned observation data — vitals and lab results.
+      Incremental merge on OBSERVATION_ID.
+      Numeric values validated via REGEXP before casting to FLOAT.
+    columns:
+      - name: OBSERVATION_ID
+        tests: [not_null, unique]
+      - name: PATIENT_ID
+        tests: [not_null]
+      - name: EFFECTIVE_DATE
+        description: Incremental watermark
+        tests: [not_null]
