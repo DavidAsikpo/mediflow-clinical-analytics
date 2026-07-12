@@ -30,7 +30,7 @@ The platform ingests raw FHIR JSON bundles, parses and flattens them into struct
 
 ## Architecture
 
-![Project Architecture Diagram](images/mediflow_architecture.jpg)
+![Project Architecture Diagram](images/mediflow_achitecture.jpg)
 ---
 
 ## Tech Stack
